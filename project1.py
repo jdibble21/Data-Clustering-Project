@@ -10,14 +10,16 @@ class ClusterData():
         self.normalizedDataFrame2 = self.dataframe[df2]
         self.k = self.getKValue()
 
-    def normalize(self,df):
+    def normalize(self):
         # Normalize values in both dataframes (0 - 100)
         df1 = self.normalizedDataFrame1
         df1 = ((df1-df1.min())/(df1.max()-df1.min()))*100
+        df1 = df1.astype(int)
         self.normalizedDataFrame1 = df1
 
         df2 = self.normalizedDataFrame2
         df2 = ((df2-df2.min())/(df2.max()-df2.min()))*100
+        df2 = df2.astype(int)
         self.normalizedDataFrame2 = df2
 
     def getKValue(self):
@@ -33,3 +35,5 @@ class ClusterData():
         return int(math.fabs(p[0] - q[0]) + math.fabs(p[1]-q[1]))
 
 clusterMapping = ClusterData('white_rating','black_rating')
+clusterMapping.normalize()
+
