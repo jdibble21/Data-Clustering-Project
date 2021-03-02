@@ -53,10 +53,13 @@ cMap.normalize()
 
 kmeans = KMeans(n_clusters=cMap.k).fit(cMap.combinedDataFrame)
 centroids = kmeans.cluster_centers_
-print(centroids)
+print("CENTROID COORDINATES:",centroids)
+print("\nSee matplotlib graph output...")
 
 plt.scatter(cMap.combinedDataFrame[cMap.df1Name],cMap.combinedDataFrame[cMap.df2Name],  s=50, alpha=0.5)
 plt.scatter(centroids[:, 0],centroids[:, 1], c='red',s=50)
+plt.title('Clustering with '+str(cMap.k)+' Centroids')
+plt.suptitle('CS455 Project 1 K-Means Clustering Output', fontsize=16)
 plt.show()
 
 
