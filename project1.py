@@ -4,6 +4,11 @@ import math
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 
+# normalized values are x,y coordinates 
+#1: choose random centroids x and y 0-100
+#2: Assign each point to cluster such that distance(p,clusteri) is the shortest (find cluster that is shortest distance to given point)
+#3: recompute each centroid and reassign points, (repeat until the newly computed centroids are identical to old centroid)
+
 class ClusterData():
     def __init__(self,df1,df2):
         self.df1Name = df1
@@ -11,6 +16,8 @@ class ClusterData():
         self.dataframe = pd.read_csv("cs455_homework3_dataset_dibble.csv")
         self.normalizedDataFrame1 = self.dataframe[df1]
         self.normalizedDataFrame2 = self.dataframe[df2]
+        self.points = []
+        self.centroids = {}
         self.combinedDataFrame = []
         self.k = self.getKValue()
 
@@ -61,5 +68,3 @@ plt.scatter(centroids[:, 0],centroids[:, 1], c='red',s=50)
 plt.title('Clustering with '+str(cMap.k)+' Centroids')
 plt.suptitle('CS455 Project 1 K-Means Clustering Output', fontsize=16)
 plt.show()
-
-
