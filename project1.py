@@ -2,7 +2,6 @@ import pandas as pd
 pd.set_option('display.max_rows', None)
 import math
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
 
 # normalized values are x,y coordinates 
 #1: choose random centroids x and y 0-100
@@ -55,16 +54,3 @@ class ClusterData():
             sum = sum + d * d
         return sum
 
-cMap = ClusterData('white_rating','black_rating')
-cMap.normalize()
-
-kmeans = KMeans(n_clusters=cMap.k).fit(cMap.combinedDataFrame)
-centroids = kmeans.cluster_centers_
-print("CENTROID COORDINATES:",centroids)
-print("\nSee matplotlib graph output...")
-
-plt.scatter(cMap.combinedDataFrame[cMap.df1Name],cMap.combinedDataFrame[cMap.df2Name],  s=50, alpha=0.5)
-plt.scatter(centroids[:, 0],centroids[:, 1], c='red',s=50)
-plt.title('Clustering with '+str(cMap.k)+' Centroids')
-plt.suptitle('CS455 Project 1 K-Means Clustering Output', fontsize=16)
-plt.show()
