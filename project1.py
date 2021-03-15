@@ -2,55 +2,72 @@ import pandas as pd
 pd.set_option('display.max_rows', None)
 import math
 import matplotlib.pyplot as plt
+from random import randrange
 
 # normalized values are x,y coordinates 
 #1: choose random centroids x and y 0-100
 #2: Assign each point to cluster such that distance(p,clusteri) is the shortest (find cluster that is shortest distance to given point)
 #3: recompute each centroid and reassign points, (repeat until the newly computed centroids are identical to old centroid)
 
-class ClusterData():
-    def __init__(self,df1,df2):
-        self.df1Name = df1
-        self.df2Name = df2
-        self.dataframe = pd.read_csv("cs455_homework3_dataset_dibble.csv")
-        self.normalizedDataFrame1 = self.dataframe[df1]
-        self.normalizedDataFrame2 = self.dataframe[df2]
-        self.points = []
-        self.centroids = {}
-        self.combinedDataFrame = []
-        self.k = self.getKValue()
+def createPoints(dfX,dfY):
+    #Build array of x and y values for cluster points
+    points = []
+    for i in range(0,len(dfX)):
+        points.append([dfX[i],dfY[i]])
+    return points
 
-    def normalize(self):
-        # Normalize values in both dataframes (0 - 100), cast to integers
-        df1 = self.normalizedDataFrame1
-        df1 = ((df1-df1.min())/(df1.max()-df1.min()))*100
-        df1 = df1.astype(int)
-        self.normalizedDataFrame1 = df1
+def chooseInitCentroids(k):
+    centroids = []
+    for i in range(0,k):
+        centroids.append([randrange(101),randrange(101)])
+    return centroids
 
-        df2 = self.normalizedDataFrame2
-        df2 = ((df2-df2.min())/(df2.max()-df2.min()))*100
-        df2 = df2.astype(int)
-        self.normalizedDataFrame2 = df2
+def get_X(P):
+    r = []
+    for x in P:
+        r.append(x[0])
+    return r
 
-        # Combine dataframes into single 2 column frame
-        self.combinedDataFrame = pd.concat([df1,df2], join='outer',axis=1)
 
-    def getKValue(self):
-        kVal = 0
-        while (True):
-            kVal = int(input("Enter an integer between 2 and 4 for the k value: "))
-            if(kVal > 1 and kVal < 5):
-                break
-            print("ERROR: k value must be an integer between 2 and 4")
-        return kVal
+def get_Y(P):
+    r = []
+    for x in P:
+        r.append(x[1])
+    return r
 
-    def distance(self,p, q):
-        return int(math.fabs(p[0] - q[0]) + math.fabs(p[1]-q[1]))
 
-    def SSE(self,center, cluster):
-        sum = 0
-        for p in cluster:
-            d = self.distance(center, p)
-            sum = sum + d * d
-        return sum
+def getKValue():
+    kVal = 0
+    while (True):
+        kVal = int(input("Enter an integer between 2 and 4 for the k value: "))
+        if(kVal > 1 and kVal < 5):
+            break
+        print("ERROR: k value must be an integer between 2 and 4")
+    return kVal
+
+
+def normalize(df):
+    # Normalize values in dataframe (0 - 100), cast to integers
+    normalizedDF = ((df-df.min())/(df.max()-df.min()))*100
+    normalizedDF = normalizedDF.astype(int)
+    return normalizedDF
+    
+
+def distance(p, q):
+    return int(math.fabs(p[0] - q[0]) + math.fabs(p[1]-q[1]))
+
+
+def SSE(center, cluster):
+    sum = 0
+    for p in cluster:
+        d = distance(center, p)
+        sum = sum + d * d
+    return sum
+
+dataFrame = pd.read_csv("cs455_homework3_dataset_dibble.csv")
+normXDataFrame = normalize(dataFrame['white_rating'])
+normYDataFrame = normalize(dataFrame['black_rating'])
+kNum = getKValue()
+points = createPoints(normXDataFrame,normYDataFrame)
+initCentroids = chooseInitCentroids(kNum)
 
