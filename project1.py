@@ -39,10 +39,10 @@ def get_Y(P):
 def getKValue():
     kVal = 0
     while (True):
-        kVal = int(input("Enter an integer between 2 and 4 for the k value: "))
-        if(kVal > 1 and kVal < 5):
+        kVal = int(input("Enter an integer 2 or 3 for the k value: "))
+        if(kVal > 1 and kVal < 4):
             break
-        print("ERROR: k value must be an integer between 2 and 4")
+        print("ERROR: k value must be an integer 2 or 4")
     return kVal
 
 
@@ -71,3 +71,69 @@ kNum = getKValue()
 points = createPoints(normXDataFrame,normYDataFrame)
 initCentroids = chooseInitCentroids(kNum)
 
+# Output the points with the inital centroids
+X = get_X(points)
+Y = get_Y(points)
+plt.ylim([0,105])
+plt.xlim([0,105])
+plt.scatter(X,Y)
+for i in range(0,kNum):
+    X = initCentroids[i][0]
+    Y = initCentroids[i][1]
+    plt.ylim([0,105])
+    plt.xlim([0,105])
+    plt.scatter(X,Y, color="red")
+plt.title("Initial Centroids")
+plt.show()
+
+# Assign points to each cluster by distance
+clusters = []
+if(kNum == 2):
+    cluster_1 = []
+    cluster_2 = []
+    for i in range(len(points)):
+        if (distance(points[i], initCentroids[0]) < distance(points[i], initCentroids[1])):
+            cluster_1.append(i)
+        else:
+            cluster_2.append(i)
+    clusters = [cluster_1,cluster_2]
+if(kNum == 3):
+    cluster_1 = []
+    cluster_2 = []
+    cluster_3 = []
+    for i in range(len(points)):
+        if (distance(points[i], initCentroids[0]) < distance(points[i], initCentroids[1])):
+            cluster_1.append(i)
+        elif(distance(points[i],initCentroids[1]) < distance(points[i], initCentroids[2])):
+            cluster_2.append(i)
+        else:
+            cluster_3.append(i)
+    clusters = [cluster_1,cluster_2,cluster_3]
+
+# Visualize clusters
+colorDict = {
+    0:"green",
+    1:"red",
+    2:"blue"
+}
+for i in range(0,len(clusters)):
+    cluster_points = []
+    for x in clusters[i]:
+        cluster_points.append(points[x])
+    X = get_X(cluster_points)
+    Y = get_Y(cluster_points)
+    plt.ylim([0,105])
+    plt.xlim([0,105])
+    plt.scatter(X, Y, color=colorDict[i])
+plt.title("Initial Clustering Result")
+plt.show()
+
+# Get Initial SSE
+print("\n\nInitial SSE values: ")
+for i in range(0,len(clusters)):
+    cluster_points = []
+    for x in clusters[i]:
+        cluster_points.append(points[x])
+    print(SSE(initCentroids[i],cluster_points))
+
+# Recompute centroids
